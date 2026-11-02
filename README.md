@@ -1,4 +1,4 @@
-# Zenvest AI: ETF recommender
+# Zenvest AI: ETF Recommender
 
 Website: https://zenvest-ai.onrender.com/
 
