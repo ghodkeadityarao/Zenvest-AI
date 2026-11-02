@@ -1,0 +1,55 @@
+{
+ "validation_seed": 7,
+ "rows": [
+  {
+   "cf_boost": 0.0,
+   "all_limits_met": 1.0,
+   "sector_exposure_top5": 0.282,
+   "region_exposure_top5": 0.244,
+   "risk_groups_ordered_of_24": 21
+  },
+  {
+   "cf_boost": 0.02,
+   "all_limits_met": 1.0,
+   "sector_exposure_top5": 0.277,
+   "region_exposure_top5": 0.231,
+   "risk_groups_ordered_of_24": 18
+  },
+  {
+   "cf_boost": 0.05,
+   "all_limits_met": 1.0,
+   "sector_exposure_top5": 0.249,
+   "region_exposure_top5": 0.189,
+   "risk_groups_ordered_of_24": 10
+  },
+  {
+   "cf_boost": 0.1,
+   "all_limits_met": 1.0,
+   "sector_exposure_top5": 0.181,
+   "region_exposure_top5": 0.079,
+   "risk_groups_ordered_of_24": 10
+  },
+  {
+   "cf_boost": 0.25,
+   "all_limits_met": 1.0,
+   "sector_exposure_top5": 0.121,
+   "region_exposure_top5": 0.056,
+   "risk_groups_ordered_of_24": 0
+  },
+  {
+   "cf_boost": 0.5,
+   "all_limits_met": 1.0,
+   "sector_exposure_top5": 0.113,
+   "region_exposure_top5": 0.047,
+   "risk_groups_ordered_of_24": 0
+  },
+  {
+   "cf_boost": 1.0,
+   "all_limits_met": 1.0,
+   "sector_exposure_top5": 0.118,
+   "region_exposure_top5": 0.045,
+   "risk_groups_ordered_of_24": 0
+  }
+ ],
+ "rule": "largest boost that keeps at least 90% of the zero-boost sector exposure and risk ordering"
+}

@@ -55,6 +55,12 @@ def load_and_clean(path: str = "justetf_2.csv") -> pd.DataFrame:
     # ── Fix fundSizeMillions (stored as string '1,535' in dataset) ───────────
     df["fundSizeMillions"] = _parse_numeric_string(df["fundSizeMillions"])
 
+    # ── Remember which key numbers were missing BEFORE they are filled in below ─
+    df["vol_missing"]    = df["yearVolatilityCUR"].isna()
+    df["return_missing"] = df["yearReturnCUR"].isna()
+    df["size_missing"]   = df["fundSizeMillions"].isna()
+    df["incomplete"]     = df["vol_missing"] | df["return_missing"] | df["size_missing"]
+
     # ── Parse labels column (stored as string repr of list) ─────────────────
     def safe_parse_labels(x):
         try:
@@ -112,6 +118,12 @@ def load_and_clean(path: str = "justetf_2.csv") -> pd.DataFrame:
 
     print(f"[data_pipeline] Loaded {len(df)} ETFs with {len(df.columns)} columns.")
     return df
+
+
+def data_as_of(df: pd.DataFrame) -> str:
+    """The most common quote date in the data (ISO), e.g. '2023-03-21'."""
+    dates = pd.to_datetime(df["quoteDate"], errors="coerce").dropna()
+    return dates.mode().iloc[0].date().isoformat() if len(dates) else "unknown"
 
 
 def build_feature_matrix(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:

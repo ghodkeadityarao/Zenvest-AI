@@ -1195,6 +1195,7 @@
       margin-bottom:0;
     }
 
+    .disclaimer{font-size:12px;color:var(--muted);margin-top:6px;max-width:70ch;}
     .muted-note,
     .empty-note,
     .error-note{
@@ -1451,6 +1452,7 @@
           <div>
             <h1>Find the right ETFs for your goals</h1>
             <p>Describe your financial goal in your own words. Our AI will create a personalized portfolio for you.</p>
+            <p class="disclaimer">Educational information only, not personal financial advice. ETF figures are from March 2023, so recent funds and recent performance are missing, and past returns do not predict future returns.</p>
           </div>
           <div class="ai-badge">
             <span class="shield">🛡️</span>
@@ -1670,15 +1672,19 @@
     }
 
     function buildEnginesCard(results) {
-      const top = results?.[0] || {};
-      const contentScore = Number(top?.content_score ?? 0.87);
-      const cfScore = Number(top?.cf_score ?? 0.79);
+      const list = results || [];
+      const top = list[0] || {};
+      const contentScore = Number(top.content_score);
+      const met = list.filter(r => r.meets_limits).length;
+      const limitsNote = list.length && met < list.length
+        ? `Only ${met} of ${list.length} funds meet every limit; the rest are the closest matches.`
+        : "Every recommended fund meets all of your stated limits.";
 
       return `
         <div class="section-card">
           <div class="section-head">
             <div>
-              <div class="section-title">2. Recommendation Engines <span class="section-sub">(Running in Parallel)</span></div>
+              <div class="section-title">2. How the ranking works</div>
             </div>
           </div>
           <div class="engine-grid">
@@ -1687,22 +1693,21 @@
                 <div class="engine-left">
                   <div class="engine-ico">🌀</div>
                   <div>
-                    <div class="engine-name">Content-Based Model</div>
-                    <div class="engine-desc">Matches profile to ETF features</div>
+                    <div class="engine-name">Limits first</div>
+                    <div class="engine-desc">Your fee, distribution, risk, size and currency limits</div>
                   </div>
                 </div>
                 <div class="engine-score">
-                  <div class="engine-score-label">Content Score</div>
-                  <div class="engine-score-value">${contentScore.toFixed(2)}</div>
+                  <div class="engine-score-label">Meet all limits</div>
+                  <div class="engine-score-value">${met}/${list.length}</div>
                 </div>
               </div>
               <ul class="engine-list">
-                <li>Low volatility preference match</li>
-                <li>Low TER / cost-aware ranking</li>
-                <li>Distribution policy alignment</li>
-                <li>Sector and region preference checks</li>
+                <li>Funds that meet every limit you stated rank first</li>
+                <li>Volatility limit follows your risk level</li>
+                <li>${escapeHtml(limitsNote)}</li>
               </ul>
-              <div class="engine-source">Using ETF feature signals from the cleaned dataset</div>
+              <div class="engine-source">Rules applied to the ETF dataset</div>
             </div>
 
             <div class="engine-divider">+</div>
@@ -1710,24 +1715,23 @@
             <div class="engine-card">
               <div class="engine-top">
                 <div class="engine-left">
-                  <div class="engine-ico" style="background:#f2ecff;">👥</div>
+                  <div class="engine-ico" style="background:#f2ecff;">📊</div>
                   <div>
-                    <div class="engine-name">Collaborative Filtering Model</div>
-                    <div class="engine-desc">Similar investors & patterns</div>
+                    <div class="engine-name">Profile match</div>
+                    <div class="engine-desc">Ranks the funds within your limits</div>
                   </div>
                 </div>
                 <div class="engine-score">
-                  <div class="engine-score-label">CF Score</div>
-                  <div class="engine-score-value">${cfScore.toFixed(2)}</div>
+                  <div class="engine-score-label">Top match score</div>
+                  <div class="engine-score-value">${Number.isFinite(contentScore) ? contentScore.toFixed(2) : "—"}</div>
                 </div>
               </div>
               <ul class="engine-list">
-                <li>Signals from similar risk & horizon preferences</li>
-                <li>Popular among matching investor profiles</li>
-                <li>Blended into the final hybrid ranker</li>
-                <li>Supports tie-breaking across close ETF matches</li>
+                <li>Volatility, return, fees and distribution fit</li>
+                <li>Sector and region preferences</li>
+                <li>Smoothed by an XGBoost ranker; SHAP shows the main factors</li>
               </ul>
-              <div class="engine-source">Using synthetic user–ETF interaction patterns</div>
+              <div class="engine-source">Scores come from past ETF data, not a forecast</div>
             </div>
           </div>
         </div>
